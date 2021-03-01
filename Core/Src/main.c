@@ -52,6 +52,10 @@ typedef struct
 } ADCStructure;
 
 ADCStructure ADCChannel[2]={0}; //ถ้าไม่ใส่ 0 จะ random ค่ามาให้
+
+float V_ref = 3.3;
+float resolution = 4096.0;
+float ADCOutputConverted = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -113,6 +117,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  //read analog
 	  ADCPollingMethodUpdate();
+	  ADCOutputConverted = (ADCChannel[0].Data)*(1000.0)*(V_ref)/(resolution);
+
   }
   /* USER CODE END 3 */
 }
