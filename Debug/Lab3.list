@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002001c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000069db  00000000  00000000  0002004c  2**0
+ 12 .debug_info   000069cc  00000000  00000000  0002004c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001314  00000000  00000000  00026a27  2**0
+ 13 .debug_abbrev 00001303  00000000  00000000  00026a18  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 000006e8  00000000  00000000  00027d40  2**3
+ 14 .debug_aranges 000006e8  00000000  00000000  00027d20  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000640  00000000  00000000  00028428  2**3
+ 15 .debug_ranges 00000640  00000000  00000000  00028408  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00014fcf  00000000  00000000  00028a68  2**0
+ 16 .debug_macro  00014fcf  00000000  00000000  00028a48  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00005c9f  00000000  00000000  0003da37  2**0
+ 17 .debug_line   00005c9f  00000000  00000000  0003da17  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00085a25  00000000  00000000  000436d6  2**0
+ 18 .debug_str    00085a25  00000000  00000000  000436b6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000c90fb  2**0
+ 19 .comment      0000007b  00000000  00000000  000c90db  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00001c8c  00000000  00000000  000c9178  2**2
+ 20 .debug_frame  00001c8c  00000000  00000000  000c9158  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -1128,7 +1128,7 @@ int main(void)
  8000d80:	701a      	strb	r2, [r3, #0]
 			  }
 		  }
-		  SwitchState1[1]=SwitchState1[0];
+		  SwitchState1[1]=SwitchState1[0]; //save state
  8000d82:	783b      	ldrb	r3, [r7, #0]
  8000d84:	707b      	strb	r3, [r7, #1]
 		  if (ADCMode == 0)
@@ -1137,6 +1137,7 @@ int main(void)
  8000d8a:	2b00      	cmp	r3, #0
  8000d8c:	d131      	bne.n	8000df2 <main+0xde>
 		  {
+			  //mV
 			  ADCOutputConverted = (ADCChannel[0].Data)*(1000.0)*(V_ref)/(resolution);
  8000d8e:	4b2e      	ldr	r3, [pc, #184]	; (8000e48 <main+0x134>)
  8000d90:	691b      	ldr	r3, [r3, #16]
@@ -1187,6 +1188,7 @@ int main(void)
  8000df6:	2b01      	cmp	r3, #1
  8000df8:	d19f      	bne.n	8000d3a <main+0x26>
 		  {
+			  //temperature
 			  ADCOutputConverted = (((ADCChannel[1].Data*V_ref/resolution)-V_25)/Avg_Slope) + 25.0;
  8000dfa:	4b13      	ldr	r3, [pc, #76]	; (8000e48 <main+0x134>)
  8000dfc:	6a5b      	ldr	r3, [r3, #36]	; 0x24
