@@ -60,7 +60,6 @@ float ADCOutputConverted = 0;
 
 float V_25 = 0.76;
 float Avg_Slope = 0.0025;
-float A = 25.0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -145,13 +144,15 @@ int main(void)
 				  ADCMode = 0; //change to mode 0
 			  }
 		  }
-		  SwitchState1[1]=SwitchState1[0];
+		  SwitchState1[1]=SwitchState1[0]; //save state
 		  if (ADCMode == 0)
 		  {
+			  //mV
 			  ADCOutputConverted = (ADCChannel[0].Data)*(1000.0)*(V_ref)/(resolution);
 		  }
 		  else if (ADCMode == 1)
 		  {
+			  //temperature
 			  ADCOutputConverted = (((ADCChannel[1].Data*V_ref/resolution)-V_25)/Avg_Slope) + 25.0;
 		  }
 
