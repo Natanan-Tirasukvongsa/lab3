@@ -40,7 +40,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1; //handle ADC ทั้งหมด Hal ADC 1
+ADC_HandleTypeDef hadc1;
 
 UART_HandleTypeDef huart2;
 
@@ -52,10 +52,15 @@ typedef struct
 } ADCStructure;
 
 ADCStructure ADCChannel[2]={0}; //ถ้าไม่ใส่ 0 จะ random ค่ามาให้
+uint8_t ADCMode = 0;
 
 float V_ref = 3.3;
 float resolution = 4096.0;
 float ADCOutputConverted = 0;
+
+float V_25 = 0.76;
+float Avg_Slope = 0.0025;
+float A = 25.0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,6 +111,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
   ADCPollingMethodInit(); //initial ADC
 
+  GPIO_PinState SwitchState1[2] = {0}; //now,last for sw1
+  uint32_t ButtonTimeStamp = 0; //count time for button delay
+
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,7 +127,36 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  //read analog
 	  ADCPollingMethodUpdate();
-	  ADCOutputConverted = (ADCChannel[0].Data)*(1000.0)*(V_ref)/(resolution);
+	  if(HAL_GetTick()-ButtonTimeStamp>=100)//ms
+	  {
+		  ButtonTimeStamp = HAL_GetTick(); //save time present for button delay
+		  //switch press is low
+		  SwitchState1[0]= HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); //save present state for sw1
+		  if(SwitchState1[1]==GPIO_PIN_SET
+				  && SwitchState1[0]==GPIO_PIN_RESET) //if press button (s1)
+		  {
+			  //change ADC Mode
+			  if (ADCMode == 0) //mode 0
+		  	  {
+				  ADCMode = 1; //change to mode 1
+		  	  }
+			  else
+			  {
+				  ADCMode = 0; //change to mode 0
+			  }
+		  }
+		  SwitchState1[1]=SwitchState1[0];
+		  if (ADCMode == 0)
+		  {
+			  ADCOutputConverted = (ADCChannel[0].Data)*(1000.0)*(V_ref)/(resolution);
+		  }
+		  else if (ADCMode == 1)
+		  {
+			  ADCOutputConverted = (((ADCChannel[1].Data*V_ref/resolution)-V_25)/Avg_Slope) + 25.0;
+		  }
+
+	  }
+
 
   }
   /* USER CODE END 3 */
@@ -280,6 +319,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
