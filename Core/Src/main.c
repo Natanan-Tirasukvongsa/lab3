@@ -54,7 +54,7 @@ typedef struct
 ADCStructure ADCChannel[2]={0}; //ถ้าไม่ใส่ 0 จะ random ค่ามาให้
 uint8_t ADCMode = 0;
 
-float V_ref = 3.3;
+float V_ref = 3.3; //define save memory
 float resolution = 4096.0;
 float ADCOutputConverted = 0;
 
@@ -112,8 +112,6 @@ int main(void)
 
   GPIO_PinState SwitchState1[2] = {0}; //now,last for sw1
   uint32_t ButtonTimeStamp = 0; //count time for button delay
-
-
 
   /* USER CODE END 2 */
 
